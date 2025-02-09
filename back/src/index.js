@@ -56,7 +56,7 @@ sequelize
   .sync({ alter: false })
   .then(() => {
     console.log('Base de datos sincronizada');
-    const PORT = process.env.PORT || 3001; // Usa el puerto asignado por Render o 3001 por defecto
+    const PORT = process.env.PORT || 3000; // Usa el puerto asignado por Render o 3001 por defecto
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
