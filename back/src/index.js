@@ -53,7 +53,7 @@ app.post('/api/contact', async (req, res) => {
 
 // Sincronizar la base de datos y levantar el servidor
 sequelize
-  .sync({ alter: true })
+  .sync({ alter: false })
   .then(() => {
     console.log('Base de datos sincronizada');
     const PORT = process.env.PORT || 3001; // Usa el puerto asignado por Render o 3001 por defecto
