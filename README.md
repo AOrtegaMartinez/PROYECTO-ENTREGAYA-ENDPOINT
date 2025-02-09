@@ -10,7 +10,7 @@
 ✅ Interfaz intuitiva y fácil de usar 🎨  
 
 ## 🔧 Tecnologías Utilizadas  
-- **Frontend:** React, Tailwind CSS  
+- **Frontend:** React, CSS
 - **Backend:** Node.js, Express  
 - **Base de Datos:** PostgreSQL  
 - **Autenticación:** JWT  
