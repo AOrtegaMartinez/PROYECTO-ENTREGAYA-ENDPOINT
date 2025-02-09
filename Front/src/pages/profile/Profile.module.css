@@ -1,0 +1,140 @@
+/* Ajustar el contenedor del perfil */
+.profileContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 60px;
+}
+
+.leftColumn {
+  width: 45%; /* Establecer un ancho más pequeño para el perfil */
+  max-width: 450px; /* Limitar el ancho máximo */
+}
+
+.rightColumn {
+  width: 55%; /* Dejar más espacio para el historial de órdenes */
+  max-width: 800px; /* Limitar el ancho máximo */
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.profileInfo {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.profileRow {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 15px; /* Espacio entre filas */
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ccc; /* Línea de separación entre las filas */
+}
+
+.label {
+  width: 160px; /* Establecer un ancho fijo para las etiquetas */
+  font-weight: bold;
+}
+
+.value {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.editButton, .saveButton {
+  padding: 10px 20px;
+  background-color: #4CAF50; 
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  width: 410px;
+  margin-top: 10px; /* Espacio entre el campo de teléfono y el botón */
+}
+
+.editButton:hover, .saveButton {
+  background-color: #45a049;
+}
+
+
+/* Estilo para el historial de órdenes */
+.orderTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.orderTable th,
+.orderTable td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.orderTable th {
+  font-weight: bold;
+  background-color: #f1f1f1;
+}
+
+.orderTable td {
+  background-color: white;
+}
+
+.orderTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+.modifyButton,
+.cancelButton {
+  padding: 10px 15px;
+  margin-right: 15px; /* Espacio entre los botones */
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.modifyButton {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.modifyButton:hover {
+  background-color: #45a049;
+}
+
+.cancelButton {
+  background-color: #f44336;
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #e53935;
+}
+
+/* Estilo para los botones deshabilitados */
+.modifyButton:disabled,
+.cancelButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.orderItem {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.orderDetails {
+  margin-bottom: 10px;
+}

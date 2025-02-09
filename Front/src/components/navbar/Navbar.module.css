@@ -1,0 +1,122 @@
+/* Reset global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.3rem;
+  background-color: #2C3E50;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Logo como imagen */
+.navbarLogo img {
+  width: 140px; 
+  height: auto;
+  margin-left: 40px;
+}
+
+.navbarLinks {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbarLink {
+  text-decoration: none;
+  color: white;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+  font-weight: lighter;
+}
+
+.navbarLink:hover { 
+  color: #27AE60;
+}
+
+/* Estilos para el saludo del usuario */
+.userGreeting {
+  display: flex;
+  flex-direction: column; /* Asegura que el saludo y el menú estén alineados verticalmente */
+  align-items: flex-end; /* Alinea todo el contenido hacia la derecha */
+  position: relative; 
+}
+
+.userGreetingButton {
+  padding: 0.5rem 1.5rem;
+  background-color: #27AE60;
+  border: none;
+  color: white;
+  border-radius: 5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 5px; /* Separación entre el saludo y el menú */
+}
+
+.userGreetingButton:hover {
+  background-color: #2ECC71; 
+}
+
+/* Estilos para el menú desplegable */
+.dropdownMenu {
+  position: absolute;
+  z-index: 2;
+  top: 100%; 
+  right: 0;
+  background-color: #34495e;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  display: none; 
+}
+
+.userGreeting:hover .dropdownMenu {
+  display: block; 
+}
+
+/* Estilo para el enlace de cerrar sesión */
+.logoutLink {
+  padding: 0.5rem 1.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 5rem;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Hover en el enlace de cerrar sesión */
+.logoutLink:hover {
+  text-decoration: underline; /* Añade subrayado al pasar el mouse */
+  background-color: transparent; 
+  color: white; 
+}
+
+/* Estilo para el botón de ingresar */
+.navbarButton {
+  padding: 0.5rem 1.5rem;
+  background-color: #27AE60;
+  border: none;
+  color: white;
+  border-radius: 5rem;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s ease;
+  margin-right: 40px;
+}
+
+.navbarButton:hover {
+  background-color: #e5e7eb;
+  cursor: pointer;
+  color: black;
+}

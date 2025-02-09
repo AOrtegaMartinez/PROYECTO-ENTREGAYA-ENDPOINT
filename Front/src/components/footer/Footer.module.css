@@ -1,0 +1,157 @@
+/* Estilos para el Footer */
+.footer {
+  background-color: #2C3E50;
+  color: white;
+  padding: 4rem 0rem 0rem 0rem;
+  text-align: center;
+}
+
+.footerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.footerContent {
+  flex: 1;
+  margin-bottom: 2rem;
+  max-width: 400px; /* Limitar el tamaño para mejorar la alineación */
+}
+
+.footerLogo {
+  max-width: 200px; /* Ajusta el tamaño del logo según sea necesario */
+  margin-bottom: 1rem;
+}
+
+.footerDescription {
+  font-size: 1.1rem;
+  color: #BDC3C7;
+  margin-bottom: 1.5rem;
+}
+
+.footerSocials {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.socialIcon {
+  font-size: 2rem;
+  color: #BDC3C7;
+  transition: color 0.3s ease;
+}
+
+.socialIcon:hover {
+  color: #27AE60;
+}
+
+.footerLinks {
+  flex: 1;
+  margin-bottom: 2rem;
+  max-width: 400px; /* Limitar el tamaño para mejorar la alineación */
+}
+
+.footerLinksTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #27AE60;
+}
+
+.footerLinksList {
+  list-style: none;
+  padding: 0;
+}
+
+.footerLinksList li {
+  margin-bottom: 0.5rem;
+}
+
+.footerLinksList a {
+  text-decoration: none;
+  color: #BDC3C7;
+  font-size: 1rem;
+}
+
+.footerLinksList a:hover {
+  color: white;
+}
+
+.footerContact {
+  flex: 1;
+  max-width: 400px; /* Limitar el tamaño para mejorar la alineación */
+}
+
+.footerContactTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #27AE60;
+}
+
+.footerContactItem {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #BDC3C7;
+}
+
+.footerBottom {
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #686868;
+  background-color: #E0E6E9;
+  padding: 1rem;
+  font-weight: lighter;
+}
+
+.footerBottom p {
+  margin: 0;
+}
+
+/* Responsividad para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .footerContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footerContent, .footerLinks, .footerContact {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .footerSocials {
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  .footerLinksList a {
+    font-size: 0.9rem;
+  }
+
+  .footerBottom {
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerDescription {
+    font-size: 1rem;
+  }
+
+  .footerLogo {
+    max-width: 150px;
+  }
+
+  .footerLinksTitle, .footerContactTitle {
+    font-size: 1.2rem;
+  }
+
+  .footerLinksList a {
+    font-size: 0.9rem;
+  }
+}
