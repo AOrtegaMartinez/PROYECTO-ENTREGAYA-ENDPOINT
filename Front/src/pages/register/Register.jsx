@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Register.module.css'; // Impotamos los estilos
 import Swal from 'sweetalert2'; // Importamos la librería de alertas
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importamos los íconos de ojo
@@ -200,7 +200,7 @@ const Register = () => {
 
           <p className={styles.loginLink}>
 {/*           Se crea un link para redireccionar al usuario a la página de login
- */}            ¿Ya tienes cuenta? <button onClick={handleLoginRedirect}>Inicia sesión aquí </button>
+ */}            ¿Ya tienes cuenta? <Link to='/login' className={styles.loginLink}>Inicia sesión aquí </Link>
           </p>
         </form>
       </div>
