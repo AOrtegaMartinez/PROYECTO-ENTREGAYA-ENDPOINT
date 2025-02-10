@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import styles from './Profile.module.css'; // Se importan los estilos
-import Swal from 'sweetalert2'; // Se importa la libreria Sweetalert, para mostrar alertas interactivas
+import React, { useEffect, useState } from "react";
+import styles from "./Profile.module.css"; // Importación de los estilos CSS
+import Swal from "sweetalert2"; // Biblioteca para mostrar alertas interactivas
 
 const Profile = () => {
   // Se crean estados para manejar los datos del usuario, órdenes y estados de carga, que se usarán en el componente
@@ -18,24 +18,29 @@ const Profile = () => {
   const [editProfile, setEditProfile] = useState(false);
 
   // Se obtiene el token de autenticación almacenado en localStorage
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   // Se crea esta función asíncrona para obtener el perfil del usuario desde la API, y guardar los datos en el estado, 
   // para mostrarlos en el componente, y llenar los campos del formulario de modificación de perfil
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('https://project-entregaya.onrender.com/api/profile', {
-        method: 'GET',
+      const response = await fetch("http://localhost:3000/api/profile", {
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
-        throw new Error('Error al obtener los datos del cliente');
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
+        throw new Error("Error al obtener los datos del cliente");
       }
-  
+
       const data = await response.json();
       setUser(data);
       setFormValues({
@@ -47,139 +52,112 @@ const Profile = () => {
       });
     } catch (err) {
       setError(err.message);
+    }
+  };
+
+  // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
+  const fetchOrderHistory = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/orders", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al obtener el historial de órdenes");
+      }
+
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        setOrders(data);
+      } else {
+        setOrders([]);
+      }
+    } catch (err) {
+      setError(err.message);
     } finally {
-      setLoading(false); // Asegúrate de que la carga termine aquí
+      setLoading(false);
     }
   };
-  
 
- // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
- const fetchOrderHistory = async () => {
-  try {
-    const response = await fetch(`https://project-entregaya.onrender.com/api/orders?user_id=${user?.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Error al obtener el historial de órdenes');
+  // Se usa este useEffect, para ejecutar las funciones de carga al montar el componente
+  useEffect(() => {
+    if (!token) {
+      window.location.href = "/login";
+      return;
     }
 
-    const data = await response.json();
-
-    // Si la API no tiene filtro, aplica el filtro manualmente
-    if (Array.isArray(data)) {
-      const userOrders = data.filter(order => order.user_id === user?.id);
-      setOrders(userOrders);
-    } else {
-      setOrders([]);
-    }
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  } 
-};
-
- // Se usa este useEffect, para ejecutar las funciones de carga al montar el componente
-// Se usa este useEffect para ejecutar las funciones de carga al montar el componente
-useEffect(() => {
-  if (!token) {
-    window.location.href = '/login'; // Redirige si no hay token
-    return;
-  }
-
-  const fetchData = async () => {
-    await fetchUserProfile();
-  };
-
-  fetchData();
-}, [token]); // El useEffect se ejecuta solo cuando el token cambia
-
-
-// Se ejecuta fetchOrderHistory solo cuando user.id está disponible
-useEffect(() => {
-  if (user?.id) {
+    fetchUserProfile();
     fetchOrderHistory();
-  }
-}, [user?.id]); // Solo se ejecuta cuando user?.id cambia
-
+  }, [token]);
 
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
   const handleModifyOrder = (orderId) => {
     const order = orders.find((o) => o.order_id === orderId);
-  
-    Swal.fire({
-      title: 'Modificar Orden',
-      html: `
-        <input id="package_type" class="swal2-input" placeholder="Tipo de paquete" value="${order.package_type}">
-        <input id="destination_department" class="swal2-input" placeholder="Departamento" value="${order.destination_department}">
-        <input id="destination_municipality" class="swal2-input" placeholder="Municipio" value="${order.destination_municipality}">
-        <input id="recipient_name" class="swal2-input" placeholder="Nombre del destinatario" value="${order.recipient_name}">
-        <input id="destination_address" class="swal2-input" placeholder="Dirección" value="${order.destination_address}">
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'Guardar cambios',
-      cancelButtonText: 'Cancelar',
-      preConfirm: () => {
-        return {
-          package_type: document.getElementById('package_type').value,
-          destination_department: document.getElementById('destination_department').value,
-          destination_municipality: document.getElementById('destination_municipality').value,
-          recipient_name: document.getElementById('recipient_name').value,
-          destination_address: document.getElementById('destination_address').value,
-        };
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleSaveChanges(order.order_id, result.value);
-      }
+    setSelectedOrder(order);
+    setFormValues({
+      package_type: order.package_type,
+      destination_department: order.destination_department,
+      destination_municipality: order.destination_municipality,
+      recipient_name: order.recipient_name,
+      destination_address: order.destination_address,
     });
+    setShowModifyModal(true);
   };
 
   // Se crea esta función, para manejar la cancelación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de confirmación de cancelación y se guarda la orden a cancelar
   const handleCancelOrder = (orderId) => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'No, volver',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await confirmCancel(orderId);
-      }
-    });
+    const order = orders.find((o) => o.order_id === orderId);
+    setOrderToCancel(order);
+    setShowCancelConfirmation(true);
   };
 
- // Se crea esta función para confirmar la cancelación de una orden, donde se envía una petición PUT a la API para cambiar el estado de la orden a 'Canceled'
- const confirmCancel = async (orderId) => {
-  try {
-    const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${orderId}/cancel`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  // Se crea esta función para confirmar la cancelación de una orden, donde se envía una petición PUT a la API para cambiar el estado de la orden a 'Canceled'
+  const confirmCancel = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/orders/${orderToCancel.order_id}/cancel`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    if (!response.ok) throw new Error('No se pudo cancelar la orden');
+      if (!response.ok) {
+        throw new Error("No se pudo cancelar la orden");
+      }
 
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.order_id === orderId ? { ...order, current_status: 'Canceled' } : order
-      )
-    );
+      setOrders(
+        orders.map((order) =>
+          order.order_id === orderToCancel.order_id
+            ? { ...order, current_status: "Canceled" }
+            : order
+        )
+      );
+      setShowCancelConfirmation(false);
 
-    Swal.fire('Orden cancelada', 'Se canceló con éxito', 'success');
-  } catch (err) {
-    Swal.fire('Error', err.message, 'error');
-  }
-};
+      Swal.fire({
+        icon: "success",
+        title: "Orden cancelada con éxito",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Error al cancelar la orden",
+        text: err.message,
+        showConfirmButton: true,
+      });
+    }
+  };
 
   // Se crea esta función, para cerrar el modal de confirmación de cancelación
   const closeCancelConfirmation = () => {
@@ -187,79 +165,63 @@ useEffect(() => {
   };
 
   // Se crea esta función, para guardar los cambios realizados en una orden, donde se envía una petición PUT a la API con los nuevos datos de la orden
-  const handleSaveChanges = async (orderId, updatedValues) => {
-    try {
-      const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${orderId}/update`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedValues),
-      });
-  
-      if (!response.ok) throw new Error('No se pudo modificar la orden');
-  
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.order_id === orderId ? { ...order, ...updatedValues } : order
-        )
-      );
-  
-      Swal.fire('Orden modificada', 'Los cambios se guardaron con éxito', 'success');
-    } catch (err) {
-      Swal.fire('Error', err.message, 'error');
-    }
-  };
-
-  const hasProfileChanges = () => {
-    return (
-      formValues.name !== user?.name ||
-      formValues.lastname !== user?.lastname ||
-      formValues.ID_number !== user?.ID_number ||
-      formValues.email !== user?.email ||
-      formValues.phone !== user?.phone
-    );
-  };
-  
-  const handleSaveProfileChanges = async () => {
-    if (!hasProfileChanges()) {
+  const handleSaveChanges = async () => {
+    if (
+      formValues.package_type === selectedOrder.package_type &&
+      formValues.destination_department ===
+        selectedOrder.destination_department &&
+      formValues.destination_municipality ===
+        selectedOrder.destination_municipality &&
+      formValues.recipient_name === selectedOrder.recipient_name &&
+      formValues.destination_address === selectedOrder.destination_address
+    ) {
       Swal.fire({
-        icon: 'info',
-        title: 'No realizaste ningún cambio',
-        text: 'Por favor, realiza cambios antes de guardar.',
+        icon: "info",
+        title: "No realizaste ningún cambio",
+        text: "Por favor, realiza cambios antes de guardar.",
         showConfirmButton: true,
       });
       return;
     }
-  
+
     try {
-      const response = await fetch('https://project-entregaya.onrender.com/api/profile', {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formValues),
-      });
-  
+      const response = await fetch(
+        `http://localhost:3000/api/orders/${selectedOrder.order_id}/update`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formValues),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('No se pudo actualizar el perfil');
+        throw new Error("No se pudo modificar la orden");
       }
-  
-      fetchUserProfile(); // Re-fetch updated user profile
-      setEditProfile(false);
-  
+
+      setOrders(
+        orders.map((order) =>
+          order.order_id === selectedOrder.order_id
+            ? { ...order, ...formValues }
+            : order
+        )
+      );
+
+      setShowModifyModal(false);
+      setSelectedOrder(null);
+
       Swal.fire({
-        icon: 'success',
-        title: 'Perfil actualizado con éxito',
+        icon: "success",
+        title: "Orden modificada con éxito",
         showConfirmButton: false,
         timer: 1500,
       });
     } catch (err) {
       Swal.fire({
-        icon: 'error',
-        title: 'Error al actualizar el perfil',
+        icon: "error",
+        title: "Error al modificar la orden",
         text: err.message,
         showConfirmButton: true,
       });
@@ -278,10 +240,6 @@ useEffect(() => {
     setSelectedOrder(null);
   };
 
-  const toggleEditProfile = () => {
-    setEditProfile(!editProfile);
-  };
-
   // Se usa esta condición para mostrar un mensaje de carga, un mensaje de error o la información del perfil y las órdenes del usuario
   if (loading) {
     return <div>Cargando...</div>;
@@ -293,103 +251,11 @@ useEffect(() => {
 
   return (
     <div className={styles.profileContainer}>
-      <div className={styles.leftColumn}>
-      {/* Aquí se renderiza el perfil del usuario */}
-        <h2 className={styles.title}>Mi Perfil</h2>
-        <div className={styles.profileInfo}>
-          <div className={styles.profileRow}>
-            <span className={styles.label}>Nombre</span>
-            {editProfile ? (
-              <input
-                className={styles.input}
-                type="text"
-                name="name"
-                value={formValues.name}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={styles.value}>{user?.name}</span>
-            )}
-          </div>
-          <div className={styles.profileRow}>
-            <span className={styles.label}>Apellido</span>
-            {editProfile ? (
-              <input
-                className={styles.input}
-                type="text"
-                name="lastname"
-                value={formValues.lastname}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={styles.value}>{user?.lastname}</span>
-            )}
-          </div>
-          <div className={styles.profileRow}>
-            <span className={styles.label}>No. Identificación</span>
-            {editProfile ? (
-              <input
-                className={styles.input}
-                type="text"
-                name="ID_number"
-                value={formValues.ID_number}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={styles.value}>{user?.ID_number}</span>
-            )}
-          </div>
-          <div className={styles.profileRow}>
-            <span className={styles.label}>Correo</span>
-            {editProfile ? (
-              <input
-                className={styles.input}
-                type="email"
-                name="email"
-                value={formValues.email}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={styles.value}>{user?.email}</span>
-            )}
-          </div>
-          <div className={styles.profileRow}>
-            <span className={styles.label}>Teléfono</span>
-            {editProfile ? (
-              <input
-                className={styles.input}
-                type="tel"
-                name="phone"
-                value={formValues.phone}
-                onChange={handleInputChange}
-              />
-            ) : (
-              <span className={styles.value}>{user?.phone}</span>
-            )}
-          </div>
-
-          {editProfile ? (
-        <button
-          className={styles.saveButton}
-          onClick={handleSaveProfileChanges}
-          disabled={!hasProfileChanges()} 
-        >
-          Guardar Cambios
-        </button>
-      ) : (
-        <button className={styles.editButton} onClick={toggleEditProfile}>
-          Editar
-        </button>
-      )}
-    </div>
-  </div>
-
-
       <div className={styles.rightColumn}>
         {/* Aquí se renderiza el historial de órdenes del usuario */}
         <h2 className={styles.title}>Historial de Órdenes</h2>
         {Array.isArray(orders) && orders.length > 0 ? (
-        // Se crea una tabla para mostrar las órdenes del usuario
+          // Se crea una tabla para mostrar las órdenes del usuario
           <table className={styles.orderTable}>
             <thead>
               <tr>
@@ -410,15 +276,23 @@ useEffect(() => {
                     {/* Se muestran  los botones para modificar y cancelar órdenes */}
                     <button
                       onClick={() => handleModifyOrder(order.order_id)}
-                      className={`${styles.modifyButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
-                      disabled={order.current_status !== 'Pending'}
+                      className={`${styles.modifyButton} ${
+                        order.current_status !== "Pending"
+                          ? styles.disabledButton
+                          : ""
+                      }`}
+                      disabled={order.current_status !== "Pending"}
                     >
                       Modificar
                     </button>
                     <button
                       onClick={() => handleCancelOrder(order.order_id)}
-                      className={`${styles.cancelButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
-                      disabled={order.current_status !== 'Pending'}
+                      className={`${styles.cancelButton} ${
+                        order.current_status !== "Pending"
+                          ? styles.disabledButton
+                          : ""
+                      }`}
+                      disabled={order.current_status !== "Pending"}
                     >
                       Cancelar
                     </button>
@@ -441,7 +315,10 @@ useEffect(() => {
               <button onClick={confirmCancel} className={styles.confirmButton}>
                 Sí
               </button>
-              <button onClick={closeCancelConfirmation} className={styles.cancelButton}>
+              <button
+                onClick={closeCancelConfirmation}
+                className={styles.cancelButton}
+              >
                 No
               </button>
             </div>
@@ -460,8 +337,8 @@ useEffect(() => {
                 <input
                   type="text"
                   name="package_type"
-                  value={formValues.package_type}
-                  onChange={handleInputChange}
+                  value={formValues.package_type} // se muestra el valor actual del campo
+                  onChange={handleInputChange} // se manejan los cambios en el campo, para actualizar el estado, con la información ingresada por el usuario
                 />
               </label>
               <label>
@@ -469,8 +346,8 @@ useEffect(() => {
                 <input
                   type="text"
                   name="destination_department"
-                  value={formValues.destination_department}
-                  onChange={handleInputChange}
+                  value={formValues.destination_department} // se muestra el valor actual del campo
+                  onChange={handleInputChange} // se manejan los cambios en el campo, para actualizar el estado, con la información ingresada por el usuario
                 />
               </label>
               <label>
@@ -478,8 +355,8 @@ useEffect(() => {
                 <input
                   type="text"
                   name="destination_municipality"
-                  value={formValues.destination_municipality}
-                  onChange={handleInputChange}
+                  value={formValues.destination_municipality} // se muestra el valor actual del campo
+                  onChange={handleInputChange} // se manejan los cambios en el campo, para actualizar el estado, con la información ingresada por el usuario
                 />
               </label>
               <label>
@@ -487,8 +364,8 @@ useEffect(() => {
                 <input
                   type="text"
                   name="recipient_name"
-                  value={formValues.recipient_name}
-                  onChange={handleInputChange}
+                  value={formValues.recipient_name} // se muestra el valor actual del campo
+                  onChange={handleInputChange} // se manejan los cambios en el campo, para actualizar el estado, con la información ingresada por el usuario
                 />
               </label>
               <label>
@@ -496,16 +373,23 @@ useEffect(() => {
                 <input
                   type="text"
                   name="destination_address"
-                  value={formValues.destination_address}
-                  onChange={handleInputChange}
+                  value={formValues.destination_address} // se muestra el valor actual del campo
+                  onChange={handleInputChange} // se manejan los cambios en el campo, para actualizar el estado, con la información ingresada por el usuario
                 />
               </label>
             </form>
             <div className={styles.modalButtons}>
-              <button onClick={handleSaveChanges} className={styles.confirmButton}>
+              {/*  se muestran los botones para guardar los cambios o cancelar la modificación */}
+              <button
+                onClick={handleSaveChanges}
+                className={styles.confirmButton}
+              >
                 Guardar Cambios
               </button>
-              <button onClick={closeModifyModal} className={styles.cancelButton}>
+              <button
+                onClick={closeModifyModal}
+                className={styles.cancelButton}
+              >
                 Cancelar
               </button>
             </div>
