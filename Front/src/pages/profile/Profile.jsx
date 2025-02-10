@@ -56,44 +56,50 @@ const Profile = () => {
   };
 
  // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
-  const fetchOrderHistory = async () => {
-    try {
-      const response = await fetch('https://project-entregaya.onrender.com/api/orders', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+ const fetchOrderHistory = async () => {
+  try {
+    const response = await fetch('https://project-entregaya.onrender.com/api/orders', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error('Error al obtener el historial de órdenes');
-      }
-
-      const data = await response.json();
-
-      if (Array.isArray(data) && data.length > 0) {
-        setOrders(data);
-      } else {
-        setOrders([]);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error('Error al obtener el historial de órdenes');
     }
-  };
+
+    const data = await response.json();
+
+    if (Array.isArray(data) && data.length > 0) {
+      // Filtrar órdenes por el ID del usuario autenticado
+      const userOrders = data.filter(order => order.user_id === user?.id);
+      setOrders(userOrders);
+    } else {
+      setOrders([]);
+    }
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
  // Se usa este useEffect, para ejecutar las funciones de carga al montar el componente
-  useEffect(() => {
-    if (!token) {
-      window.location.href = '/';
-      return;
-    }
+ useEffect(() => {
+  if (!token) {
+    window.location.href = '/';
+    return;
+  }
 
-    fetchUserProfile();
-    fetchOrderHistory();
-  }, [token]);
+  const fetchData = async () => {
+    await fetchUserProfile();
+    await fetchOrderHistory();
+  };
+
+  fetchData();
+}, [token]);
 
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
   const handleModifyOrder = (orderId) => {
