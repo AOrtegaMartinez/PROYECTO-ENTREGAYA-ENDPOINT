@@ -340,6 +340,7 @@ const Profile = () => {
   </button>
 )}
 </div>
+</div>
 
       <div className={styles.rightColumn}>
         {/* Aquí se renderiza el historial de órdenes del usuario */}
