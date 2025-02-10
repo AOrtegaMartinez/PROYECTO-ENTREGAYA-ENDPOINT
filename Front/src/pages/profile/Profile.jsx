@@ -98,63 +98,75 @@ const Profile = () => {
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
   const handleModifyOrder = (orderId) => {
     const order = orders.find((o) => o.order_id === orderId);
-    setSelectedOrder(order);
-    setFormValues({
-      package_type: order.package_type,
-      destination_department: order.destination_department,
-      destination_municipality: order.destination_municipality,
-      recipient_name: order.recipient_name,
-      destination_address: order.destination_address,
+  
+    Swal.fire({
+      title: 'Modificar Orden',
+      html: `
+        <input id="package_type" class="swal2-input" placeholder="Tipo de paquete" value="${order.package_type}">
+        <input id="destination_department" class="swal2-input" placeholder="Departamento" value="${order.destination_department}">
+        <input id="destination_municipality" class="swal2-input" placeholder="Municipio" value="${order.destination_municipality}">
+        <input id="recipient_name" class="swal2-input" placeholder="Nombre del destinatario" value="${order.recipient_name}">
+        <input id="destination_address" class="swal2-input" placeholder="Dirección" value="${order.destination_address}">
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Guardar cambios',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        return {
+          package_type: document.getElementById('package_type').value,
+          destination_department: document.getElementById('destination_department').value,
+          destination_municipality: document.getElementById('destination_municipality').value,
+          recipient_name: document.getElementById('recipient_name').value,
+          destination_address: document.getElementById('destination_address').value,
+        };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleSaveChanges(order.order_id, result.value);
+      }
     });
-    setShowModifyModal(true);
   };
 
   // Se crea esta función, para manejar la cancelación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de confirmación de cancelación y se guarda la orden a cancelar
   const handleCancelOrder = (orderId) => {
-    const order = orders.find((o) => o.order_id === orderId);
-    setOrderToCancel(order);
-    setShowCancelConfirmation(true);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, volver',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await confirmCancel(orderId);
+      }
+    });
   };
 
  // Se crea esta función para confirmar la cancelación de una orden, donde se envía una petición PUT a la API para cambiar el estado de la orden a 'Canceled'
-  const confirmCancel = async () => {
-    try {
-      const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${orderToCancel.order_id}/cancel`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+ const confirmCancel = async (orderId) => {
+  try {
+    const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${orderId}/cancel`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error('No se pudo cancelar la orden');
-      }
+    if (!response.ok) throw new Error('No se pudo cancelar la orden');
 
-      setOrders(
-        orders.map((order) =>
-          order.order_id === orderToCancel.order_id
-            ? { ...order, current_status: 'Canceled' }
-            : order
-        )
-      );
-      setShowCancelConfirmation(false);
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.order_id === orderId ? { ...order, current_status: 'Canceled' } : order
+      )
+    );
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Orden cancelada con éxito',
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al cancelar la orden',
-        text: err.message,
-        showConfirmButton: true,
-      });
-    }
-  };
+    Swal.fire('Orden cancelada', 'Se canceló con éxito', 'success');
+  } catch (err) {
+    Swal.fire('Error', err.message, 'error');
+  }
+};
 
   // Se crea esta función, para cerrar el modal de confirmación de cancelación
   const closeCancelConfirmation = () => {
@@ -162,61 +174,28 @@ const Profile = () => {
   };
 
   // Se crea esta función, para guardar los cambios realizados en una orden, donde se envía una petición PUT a la API con los nuevos datos de la orden
-  const handleSaveChanges = async () => {
-    if (
-      formValues.package_type === selectedOrder.package_type &&
-      formValues.destination_department === selectedOrder.destination_department &&
-      formValues.destination_municipality === selectedOrder.destination_municipality &&
-      formValues.recipient_name === selectedOrder.recipient_name &&
-      formValues.destination_address === selectedOrder.destination_address
-    ) {
-      Swal.fire({
-        icon: 'info',
-        title: 'No realizaste ningún cambio',
-        text: 'Por favor, realiza cambios antes de guardar.',
-        showConfirmButton: true,
-      });
-      return;
-    }
-
+  const handleSaveChanges = async (orderId, updatedValues) => {
     try {
-      const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${selectedOrder.order_id}/update`, {
+      const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${orderId}/update`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(updatedValues),
       });
-
-      if (!response.ok) {
-        throw new Error('No se pudo modificar la orden');
-      }
-
-      setOrders(
-        orders.map((order) =>
-          order.order_id === selectedOrder.order_id
-            ? { ...order, ...formValues }
-            : order
+  
+      if (!response.ok) throw new Error('No se pudo modificar la orden');
+  
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.order_id === orderId ? { ...order, ...updatedValues } : order
         )
       );
-
-      setShowModifyModal(false);
-      setSelectedOrder(null);
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Orden modificada con éxito',
-        showConfirmButton: false,
-        timer: 1500,
-      });
+  
+      Swal.fire('Orden modificada', 'Los cambios se guardaron con éxito', 'success');
     } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al modificar la orden',
-        text: err.message,
-        showConfirmButton: true,
-      });
+      Swal.fire('Error', err.message, 'error');
     }
   };
 
