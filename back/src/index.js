@@ -1,5 +1,5 @@
+require('dotenv').config(); 
 const express = require('express');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const sequelize = require('./config');
 const { sendContactMessage } = require('./mailer'); // Importar la función de contacto
@@ -8,11 +8,8 @@ const { sendContactMessage } = require('./mailer'); // Importar la función de c
 const orderRoutes = require('./routes/orderRoutes');
 const clientRoutes = require('./routes/clientRoutes');
 const orderStatusRoutes = require('./routes/orderStatusRoutes');
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes')
 const profileRoutes = require('./routes/profileRoutes');
-
-// Se invoca dotenv, para cargar las variables de entorno.
-dotenv.config();
 
 // Se invoca express, para crear el servidor.
 const app = express();
