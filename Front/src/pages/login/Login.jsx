@@ -55,9 +55,9 @@ const Login = () => {
   };
   // Se crea la función handleRegisterRedirect para redireccionar a la ruta /register
   const handleRegisterRedirect = () => {
-    navigate('/register');
+    window.location.hash = '#/register';
   };
-
+  
   return (
     // Se crea el formulario de inicio de sesión con los campos de correo y contraseña
     <div className={styles.loginContainer}>
