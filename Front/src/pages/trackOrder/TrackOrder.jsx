@@ -16,7 +16,7 @@ const TrackOrder = () => {
   const orderTracker = async (e) => {
     e.preventDefault();  // Evita el comportamiento por defecto del formulario
     try {
-      const response = await fetch(`http://localhost:3000/api/orders/track/${uuid}`);
+      const response = await fetch(`https://project-entregaya-final.onrender.com/api/orders/track/${uuid}`);
       if (response.ok) {
         const data = await response.json();
         setOrder(data);

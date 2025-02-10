@@ -42,7 +42,7 @@ const Register = () => {
 
       try {
         // Se envían los datos al servidor, 
-        const response = await fetch('http://localhost:3000/api/auth/register', {
+        const response = await fetch('https://project-entregaya-final.onrender.com/api/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
