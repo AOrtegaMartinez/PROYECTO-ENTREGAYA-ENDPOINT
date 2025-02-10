@@ -87,7 +87,7 @@ const Profile = () => {
  // Se usa este useEffect, para ejecutar las funciones de carga al montar el componente
   useEffect(() => {
     if (!token) {
-      window.location.href = '/login';
+      window.location.href = '/';
       return;
     }
 
