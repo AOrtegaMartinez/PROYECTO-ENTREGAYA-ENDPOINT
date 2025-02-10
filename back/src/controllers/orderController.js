@@ -64,45 +64,50 @@ La respuesta contiene las órdenes en formato simplificado.
 */
 const getOrders = async (req, res) => {
   try {
+    const clientId = req.user.id; // Suponiendo que req.user contiene la información del usuario autenticado
+
     const orders = await Order.findAll({
+      where: { client_id: clientId }, // Filtrar por el usuario autenticado
       include: [
         {
           model: Client,
           as: 'client',
-          attributes: ['name', 'email'], 
+          attributes: ['name', 'email'],
         },
         {
           model: OrderStatus,
           as: 'status',
-          attributes: ['name'], 
+          attributes: ['name'],
         }
       ]
     });
 
-    const simplifiedOrders = orders.map(order => {
-      return {
-        order_id: order.order_id,
-        name: order.name,
-        lastname: order.lastname,
-        ID_number: order.ID_number,
-        department: order.department,
-        municipality: order.municipality,
-        address: order.address,
-        phone: order.phone,
-        email: order.email,
-        package_type: order.package_type,
-        destination_department: order.destination_department,
-        destination_municipality: order.destination_municipality,
-        recipient_name: order.recipient_name,
-        destination_address: order.destination_address,
-        creation_date: order.creation_date,
-        current_status: order.status ? order.status.name : 'No definido', 
-        client: {
-          name: order.client.name,
-          email: order.client.email
-        }
-      };
-    });
+    if (orders.length === 0) {
+      return res.status(404).json({ message: 'No hay órdenes para este usuario' });
+    }
+
+    const simplifiedOrders = orders.map(order => ({
+      order_id: order.order_id,
+      name: order.name,
+      lastname: order.lastname,
+      ID_number: order.ID_number,
+      department: order.department,
+      municipality: order.municipality,
+      address: order.address,
+      phone: order.phone,
+      email: order.email,
+      package_type: order.package_type,
+      destination_department: order.destination_department,
+      destination_municipality: order.destination_municipality,
+      recipient_name: order.recipient_name,
+      destination_address: order.destination_address,
+      creation_date: order.creation_date,
+      current_status: order.status ? order.status.name : 'No definido',
+      client: {
+        name: order.client.name,
+        email: order.client.email
+      }
+    }));
 
     return res.status(200).json(simplifiedOrders);
   } catch (error) {
@@ -110,6 +115,7 @@ const getOrders = async (req, res) => {
     return res.status(500).json({ message: 'Error al obtener las órdenes', error });
   }
 };
+
 
 /* 
 Esta función recupera una orden específica por su ID.
