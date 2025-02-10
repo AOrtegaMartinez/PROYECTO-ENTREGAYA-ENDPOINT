@@ -65,23 +65,24 @@ const fetchOrderHistory = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Error al obtener el historial de órdenes');
+      const errorMessage = await response.text(); // Obtén el mensaje de error detallado si existe
+      throw new Error(errorMessage || 'Error al obtener el historial de órdenes');
     }
 
     const data = await response.json();
-
-    // Aquí no es necesario filtrar por user.id, ya que el backend ya lo maneja
-    setOrders(data); // Establecer directamente las órdenes sin filtro adicional
+    setOrders(data);
   } catch (err) {
     setError(err.message);
+    console.error('Error fetching order history:', err); // Verifica en la consola el mensaje de error exacto
   } finally {
     setLoading(false);
-  } 
+  }
 };
+
 
 useEffect(() => {
   if (!token) {
-    window.location.href = '/login'; // Redirige si no hay token
+    window.location.href = '/login';
     return;
   }
 
@@ -98,7 +99,7 @@ useEffect(() => {
   };
 
   fetchData();
-}, [token]); // Ejecutar solo cuando el token cambie
+}, [token]);
 
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
   const handleModifyOrder = (orderId) => {
