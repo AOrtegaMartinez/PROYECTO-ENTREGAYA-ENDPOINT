@@ -53,8 +53,8 @@ const Profile = () => {
   };
   
 
- // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
- const fetchOrderHistory = async () => {
+// Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
+const fetchOrderHistory = async () => {
   try {
     const response = await fetch('https://project-entregaya.onrender.com/api/orders', {
       method: 'GET',
@@ -70,13 +70,8 @@ const Profile = () => {
 
     const data = await response.json();
 
-    // Si la API no tiene filtro, aplica el filtro manualmente
-    if (Array.isArray(data)) {
-      const userOrders = data.filter(order => order.user_id === user?.id);
-      setOrders(userOrders);
-    } else {
-      setOrders([]);
-    }
+    // Aquí no es necesario filtrar por user.id, ya que el backend ya lo maneja
+    setOrders(data); // Establecer directamente las órdenes sin filtro adicional
   } catch (err) {
     setError(err.message);
   } finally {
@@ -84,7 +79,6 @@ const Profile = () => {
   } 
 };
 
- // Se usa este useEffect, para ejecutar las funciones de carga al montar el componente
 // Se usa este useEffect para ejecutar las funciones de carga al montar el componente
 useEffect(() => {
   if (!token) {
@@ -99,13 +93,27 @@ useEffect(() => {
   fetchData();
 }, [token]); // El useEffect se ejecuta solo cuando el token cambia
 
-
-// Se ejecuta fetchOrderHistory solo cuando user.id está disponible
 useEffect(() => {
-  if (user?.id) {
-    fetchOrderHistory();
+  if (!token) {
+    window.location.href = '/login'; // Redirige si no hay token
+    return;
   }
-}, [user?.id]); // Solo se ejecuta cuando user?.id cambia
+
+  const fetchData = async () => {
+    setLoading(true); // Comienza el estado de carga
+    try {
+      await fetchUserProfile();
+      await fetchOrderHistory();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false); // Asegúrate de que la carga termine aquí
+    }
+  };
+
+  fetchData();
+}, [token]); // Ejecutar solo cuando el token cambie
+
 
 
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
