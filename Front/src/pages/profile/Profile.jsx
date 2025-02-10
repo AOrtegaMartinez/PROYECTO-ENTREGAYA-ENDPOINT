@@ -251,6 +251,96 @@ const Profile = () => {
 
   return (
     <div className={styles.profileContainer}>
+      <div className={styles.leftColumn}>
+{/* Aquí se renderiza el perfil del usuario */}
+  <h2 className={styles.title}>Mi Perfil</h2>
+  <div className={styles.profileInfo}>
+    <div className={styles.profileRow}>
+      <span className={styles.label}>Nombre</span>
+      {editProfile ? (
+        <input
+          className={styles.input}
+          type="text"
+          name="name"
+          value={formValues.name}
+          onChange={handleInputChange}
+        />
+      ) : (
+        <span className={styles.value}>{user?.name}</span>
+      )}
+    </div>
+    <div className={styles.profileRow}>
+      <span className={styles.label}>Apellido</span>
+      {editProfile ? (
+        <input
+          className={styles.input}
+          type="text"
+          name="lastname"
+          value={formValues.lastname}
+          onChange={handleInputChange}
+        />
+      ) : (
+        <span className={styles.value}>{user?.lastname}</span>
+      )}
+    </div>
+    <div className={styles.profileRow}>
+      <span className={styles.label}>No. Identificación</span>
+      {editProfile ? (
+        <input
+          className={styles.input}
+          type="text"
+          name="ID_number"
+          value={formValues.ID_number}
+          onChange={handleInputChange}
+        />
+      ) : (
+        <span className={styles.value}>{user?.ID_number}</span>
+      )}
+    </div>
+    <div className={styles.profileRow}>
+      <span className={styles.label}>Correo</span>
+      {editProfile ? (
+        <input
+          className={styles.input}
+          type="email"
+          name="email"
+          value={formValues.email}
+          onChange={handleInputChange}
+        />
+      ) : (
+        <span className={styles.value}>{user?.email}</span>
+      )}
+    </div>
+    <div className={styles.profileRow}>
+      <span className={styles.label}>Teléfono</span>
+      {editProfile ? (
+        <input
+          className={styles.input}
+          type="tel"
+          name="phone"
+          value={formValues.phone}
+          onChange={handleInputChange}
+        />
+      ) : (
+        <span className={styles.value}>{user?.phone}</span>
+      )}
+    </div>
+
+    {editProfile ? (
+  <button
+    className={styles.saveButton}
+    onClick={handleSaveProfileChanges}
+    disabled={!hasProfileChanges()} 
+  >
+    Guardar Cambios
+  </button>
+) : (
+  <button className={styles.editButton} onClick={toggleEditProfile}>
+    Editar
+  </button>
+)}
+</div>
+
       <div className={styles.rightColumn}>
         {/* Aquí se renderiza el historial de órdenes del usuario */}
         <h2 className={styles.title}>Historial de Órdenes</h2>
