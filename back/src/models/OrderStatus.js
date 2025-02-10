@@ -16,6 +16,7 @@ const OrderStatus = sequelize.define('OrderStatus', {
     allowNull: false,  // Se valida que siempre haya un nombre de estado
   }
 }, {
+  tableName: 'OrderStatuses', // Asegurar que el nombre de la tabla coincide exactamentes
   timestamps: true,
 });
 
