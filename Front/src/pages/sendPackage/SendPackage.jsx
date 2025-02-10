@@ -32,7 +32,18 @@ const SendPackage = () => {
   useEffect(() => {
     if (!token) {
       setIsAuthenticated(false);
-      navigate("/login");
+      Swal.fire({
+        title: "Acceso restringido",
+        text: "Debes iniciar sesión para enviar un paquete.",
+        icon: "warning",
+        confirmButtonText: "Ir a iniciar sesión",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
       return;
     }
 
@@ -81,7 +92,11 @@ const SendPackage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      navigate("/login");
+      Swal.fire({
+        title: "Debes iniciar sesión",
+        html: `Para enviar un paquete, inicia sesión primero. <br><a href="/login" style="color: blue; text-decoration: underline;">Ir al login</a>`,
+        icon: "info",
+      });
       return;
     }
 
