@@ -31,16 +31,11 @@ const Profile = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-          return;
-        }
         throw new Error('Error al obtener los datos del cliente');
       }
-
+  
       const data = await response.json();
       setUser(data);
       setFormValues({
@@ -52,8 +47,11 @@ const Profile = () => {
       });
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false); // Asegúrate de que la carga termine aquí
     }
   };
+  
 
  // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
  const fetchOrderHistory = async () => {
@@ -83,14 +81,14 @@ const Profile = () => {
     setError(err.message);
   } finally {
     setLoading(false);
-  }
+  } 
 };
 
  // Se usa este useEffect, para ejecutar las funciones de carga al montar el componente
 // Se usa este useEffect para ejecutar las funciones de carga al montar el componente
 useEffect(() => {
   if (!token) {
-    window.location.href = '/';
+    window.location.href = '/login'; // Redirige si no hay token
     return;
   }
 
@@ -99,14 +97,15 @@ useEffect(() => {
   };
 
   fetchData();
-}, [token]);
+}, [token]); // El useEffect se ejecuta solo cuando el token cambia
+
 
 // Se ejecuta fetchOrderHistory solo cuando user.id está disponible
 useEffect(() => {
   if (user?.id) {
     fetchOrderHistory();
   }
-}, [user?.id]);
+}, [user?.id]); // Solo se ejecuta cuando user?.id cambia
 
 
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
