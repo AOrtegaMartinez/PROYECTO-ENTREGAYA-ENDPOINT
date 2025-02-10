@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Login.module.css'; // Se importan los estilos
 import Swal from 'sweetalert2'; // Se importa la librería de alertas
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -99,7 +99,7 @@ const Login = () => {
 {/*          Se crea un enlace para redireccionar a la ruta /register, si el usuario no tiene cuenta
              Se usa onClick para llamar a la función handleRegisterRedirect al hacer clic en el enlace
  */}        <p className={styles.registerLink}>
-  ¿No tienes cuenta? <button onClick={handleRegisterRedirect} className={styles.registerLink}>Regístrate aquí</button>
+  ¿No tienes cuenta? <Link to='/register' className={styles.registerLink}>Regístrate aquí</Link>
 </p>
       </div>
     </div>
