@@ -22,7 +22,7 @@ const app = express();
 // los métodos HTTP GET, POST, PUT, y DELETE, 
 // así como los encabezados Content-Type y Authorization.
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://project-entregaya-final.onrender.com'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
