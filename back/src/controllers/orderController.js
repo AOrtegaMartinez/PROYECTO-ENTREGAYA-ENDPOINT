@@ -83,7 +83,8 @@ const getOrders = async (req, res) => {
     });
 
     if (orders.length === 0) {
-      return res.status(404).json({ message: 'No hay órdenes para este usuario' });
+      // En lugar de un 404, enviamos una respuesta exitosa con un arreglo vacío.
+      return res.status(200).json([]);
     }
 
     const simplifiedOrders = orders.map(order => ({
@@ -115,6 +116,7 @@ const getOrders = async (req, res) => {
     return res.status(500).json({ message: 'Error al obtener las órdenes', error });
   }
 };
+
 
 
 /* 
