@@ -56,7 +56,7 @@ const Profile = () => {
  // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
  const fetchOrderHistory = async () => {
   try {
-    const response = await fetch(`https://project-entregaya.onrender.com/api/orders`, {
+    const response = await fetch('https://project-entregaya.onrender.com/api/orders', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
