@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import styles from "./Navbar.module.css"; // Importamos el archivo de estilos CSS Modules
 import logo from "../../assets/images/logo.png"; // Importamos la imagen del logo
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   // se crean los estados, que es uno de los conceptos más importantes en React. Los estados son variables 
   // que almacenan información y que pueden cambiar a lo largo del tiempo.
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Se crea un estado para manejar el menú desplegable
@@ -69,7 +72,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null); // Limpiamos el estado del cliente
-    window.location.href = "/login"; // Redirige a la página de login después de cerrar sesión
+    navigate('/login'); // Redirige a la página de login después de cerrar sesión
   };
 
   return (
