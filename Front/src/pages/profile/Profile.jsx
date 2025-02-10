@@ -378,134 +378,134 @@ useEffect(() => {
   </div>
 
 
-      <div className={styles.rightColumn}>
-        {/* Aquí se renderiza el historial de órdenes del usuario */}
-        <h2 className={styles.title}>Historial de Órdenes</h2>
-        {Array.isArray(orders) && orders.length > 0 ? (
+  <div className={styles.rightColumn}>
+      {/* Aquí se renderiza el historial de órdenes del usuario */}
+      <h2 className={styles.title}>Historial de Órdenes</h2>
+      {Array.isArray(orders) && orders.length > 0 ? (
         // Se crea una tabla para mostrar las órdenes del usuario
-          <table className={styles.orderTable}>
-            <thead>
-              <tr>
-                <th># Orden</th>
-                <th>Estado</th>
-                <th>Fecha de Creación</th>
-                <th></th>
+        <table className={styles.orderTable}>
+          <thead>
+            <tr>
+              <th># Orden</th>
+              <th>Estado</th>
+              <th>Fecha de Creación</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Se mapean las órdenes para mostrarlas en la tabla */}
+            {orders.map((order) => (
+              <tr key={order.order_id}>
+                <td>{order.order_id}</td>
+                <td>{order.current_status}</td>
+                <td>{new Date(order.creation_date).toLocaleDateString()}</td>
+                <td>
+                  {/* Se muestran los botones para modificar y cancelar órdenes */}
+                  <button
+                    onClick={() => handleModifyOrder(order.order_id)}
+                    className={`${styles.modifyButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
+                    disabled={order.current_status !== 'Pending'}
+                  >
+                    Modificar
+                  </button>
+                  <button
+                    onClick={() => handleCancelOrder(order.order_id)}
+                    className={`${styles.cancelButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
+                    disabled={order.current_status !== 'Pending'}
+                  >
+                    Cancelar
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {/* Se mapean las órdenes para mostrarlas en la tabla */}
-              {orders.map((order) => (
-                <tr key={order.order_id}>
-                  <td>{order.order_id}</td>
-                  <td>{order.current_status}</td>
-                  <td>{new Date(order.creation_date).toLocaleDateString()}</td>
-                  <td>
-                    {/* Se muestran  los botones para modificar y cancelar órdenes */}
-                    <button
-                      onClick={() => handleModifyOrder(order.order_id)}
-                      className={`${styles.modifyButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
-                      disabled={order.current_status !== 'Pending'}
-                    >
-                      Modificar
-                    </button>
-                    <button
-                      onClick={() => handleCancelOrder(order.order_id)}
-                      className={`${styles.cancelButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
-                      disabled={order.current_status !== 'Pending'}
-                    >
-                      Cancelar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div>No tienes órdenes.</div>
-        )}
-      </div>
-
-      {/* se abre el modal para cancelar una orden */}
-      {showCancelConfirmation && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h2>¿Estás seguro de que deseas cancelar esta orden?</h2>
-            <div className={styles.modalButtons}>
-              <button onClick={confirmCancel} className={styles.confirmButton}>
-                Sí
-              </button>
-              <button onClick={closeCancelConfirmation} className={styles.cancelButton}>
-                No
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/*  se abre el modal para modificar una orden */}
-      {showModifyModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h2>Modificar Orden</h2>
-            <form>
-              <label>
-                Tipo de Paquete
-                <input
-                  type="text"
-                  name="package_type"
-                  value={formValues.package_type}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Departamento de Destino
-                <input
-                  type="text"
-                  name="destination_department"
-                  value={formValues.destination_department}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Municipio de Destino
-                <input
-                  type="text"
-                  name="destination_municipality"
-                  value={formValues.destination_municipality}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Nombre del Destinatario
-                <input
-                  type="text"
-                  name="recipient_name"
-                  value={formValues.recipient_name}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <label>
-                Dirección de Destino
-                <input
-                  type="text"
-                  name="destination_address"
-                  value={formValues.destination_address}
-                  onChange={handleInputChange}
-                />
-              </label>
-            </form>
-            <div className={styles.modalButtons}>
-              <button onClick={handleSaveChanges} className={styles.confirmButton}>
-                Guardar Cambios
-              </button>
-              <button onClick={closeModifyModal} className={styles.cancelButton}>
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className={styles.noOrdersMessage}>No tienes órdenes.</div> // Solo se muestra este mensaje si no hay órdenes.
       )}
     </div>
+
+    {/* Se abre el modal para cancelar una orden */}
+    {showCancelConfirmation && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <h2>¿Estás seguro de que deseas cancelar esta orden?</h2>
+          <div className={styles.modalButtons}>
+            <button onClick={confirmCancel} className={styles.confirmButton}>
+              Sí
+            </button>
+            <button onClick={closeCancelConfirmation} className={styles.cancelButton}>
+              No
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Se abre el modal para modificar una orden */}
+    {showModifyModal && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <h2>Modificar Orden</h2>
+          <form>
+            <label>
+              Tipo de Paquete
+              <input
+                type="text"
+                name="package_type"
+                value={formValues.package_type}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Departamento de Destino
+              <input
+                type="text"
+                name="destination_department"
+                value={formValues.destination_department}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Municipio de Destino
+              <input
+                type="text"
+                name="destination_municipality"
+                value={formValues.destination_municipality}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Nombre del Destinatario
+              <input
+                type="text"
+                name="recipient_name"
+                value={formValues.recipient_name}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Dirección de Destino
+              <input
+                type="text"
+                name="destination_address"
+                value={formValues.destination_address}
+                onChange={handleInputChange}
+              />
+            </label>
+          </form>
+          <div className={styles.modalButtons}>
+            <button onClick={handleSaveChanges} className={styles.confirmButton}>
+              Guardar Cambios
+            </button>
+            <button onClick={closeModifyModal} className={styles.cancelButton}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
   );
 };
 
