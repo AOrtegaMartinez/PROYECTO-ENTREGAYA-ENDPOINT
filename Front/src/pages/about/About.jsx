@@ -3,6 +3,7 @@ import styles from './About.module.css'; // Se importan los estilos
 import image from '../../assets/images/image_about_5.jpg'; // Se importa la imagen a usar
 
 // Se crea esta función About, para renderizar la página "Acerca de" de la aplicación. 
+// Se muestra la información acerca de la Misión y Visión de la compañía.
 const About = () => {
   return (
     <div className={styles.aboutContainer}>
