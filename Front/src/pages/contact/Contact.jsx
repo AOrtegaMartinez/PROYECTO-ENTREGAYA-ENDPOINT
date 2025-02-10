@@ -26,7 +26,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://project-entregaya-final.onrender.com/api/contact', {
+      const response = await fetch('https://project-entregaya.onrender.com/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

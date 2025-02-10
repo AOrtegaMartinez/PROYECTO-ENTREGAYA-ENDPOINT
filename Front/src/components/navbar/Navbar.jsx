@@ -23,7 +23,7 @@ const Navbar = () => {
     //  y que se encargará de hacer la petición a la API, obtener los datos del cliente y guardarlos en el estado
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("https://project-entregaya-final.onrender.com/api/profile", {
+        const response = await fetch("https://project-entregaya.onrender.com/api/profile", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

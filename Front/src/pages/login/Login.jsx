@@ -23,7 +23,7 @@ const Login = () => {
 
     try {
       // Se envía una petición POST al endpoint de login con los datos del formulario,
-      const response = await fetch('https://project-entregaya-final.onrender.com/api/auth/login', {
+      const response = await fetch('https://project-entregaya.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

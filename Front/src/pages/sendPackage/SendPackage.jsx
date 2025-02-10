@@ -39,7 +39,7 @@ const SendPackage = () => {
     // Creamos esta función para obtener los datos del usuario, aquí hacemos la petición a la API
     const fetchUserData = async () => {
       try {
-        const response = await fetch("https://project-entregaya-final.onrender.com/api/profile", {
+        const response = await fetch("https://project-entregaya.onrender.com/api/profile", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const SendPackage = () => {
     console.log("Enviando los datos del formulario:", formData);
 
     try {
-      const response = await fetch("https://project-entregaya-final.onrender.com/api/orders", { // Aqui hacemos la petición al backend, al endpoint de la API
+      const response = await fetch("https://project-entregaya.onrender.com/api/orders", { // Aqui hacemos la petición al backend, al endpoint de la API
         method: "POST",
         headers: {
           "Content-Type": "application/json",

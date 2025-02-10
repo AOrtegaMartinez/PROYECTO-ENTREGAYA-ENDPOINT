@@ -24,7 +24,7 @@ const Profile = () => {
   // para mostrarlos en el componente, y llenar los campos del formulario de modificación de perfil
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('https://project-entregaya-final.onrender.com/api/profile', {
+      const response = await fetch('https://project-entregaya.onrender.com/api/profile', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const Profile = () => {
  // Se crea esta función para obtener el historial de órdenes del usuario desde la API, donde se guardan las órdenes en el estado
   const fetchOrderHistory = async () => {
     try {
-      const response = await fetch('https://project-entregaya-final.onrender.com/api/orders', {
+      const response = await fetch('https://project-entregaya.onrender.com/api/orders', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ const Profile = () => {
  // Se crea esta función para confirmar la cancelación de una orden, donde se envía una petición PUT a la API para cambiar el estado de la orden a 'Canceled'
   const confirmCancel = async () => {
     try {
-      const response = await fetch(`https://project-entregaya-final.onrender.com/api/orders/${orderToCancel.order_id}/cancel`, {
+      const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${orderToCancel.order_id}/cancel`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -180,7 +180,7 @@ const Profile = () => {
     }
 
     try {
-      const response = await fetch(`https://project-entregaya-final.onrender.com/api/orders/${selectedOrder.order_id}/update`, {
+      const response = await fetch(`https://project-entregaya.onrender.com/api/orders/${selectedOrder.order_id}/update`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -242,7 +242,7 @@ const Profile = () => {
     }
   
     try {
-      const response = await fetch('https://project-entregaya-final.onrender.com/api/profile', {
+      const response = await fetch('https://project-entregaya.onrender.com/api/profile', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
