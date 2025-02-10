@@ -33,15 +33,17 @@ const SendPackage = () => {
     if (!token) {
       setIsAuthenticated(false);
       Swal.fire({
-        title: "Acceso restringido",
+        title: "Acceso requerido",
         text: "Debes iniciar sesión para enviar un paquete.",
         icon: "warning",
-        confirmButtonText: "Ir a iniciar sesión",
         showCancelButton: true,
+        confirmButtonText: "Iniciar sesión",
         cancelButtonText: "Cancelar",
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
+        } else {
+          navigate("/");
         }
       });
       return;
