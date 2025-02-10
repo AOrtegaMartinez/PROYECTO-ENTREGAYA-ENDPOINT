@@ -79,7 +79,6 @@ const fetchOrderHistory = async () => {
   } 
 };
 
-// Se usa este useEffect para ejecutar las funciones de carga al montar el componente
 useEffect(() => {
   if (!token) {
     window.location.href = '/login'; // Redirige si no hay token
@@ -87,34 +86,19 @@ useEffect(() => {
   }
 
   const fetchData = async () => {
-    await fetchUserProfile();
-  };
-
-  fetchData();
-}, [token]); // El useEffect se ejecuta solo cuando el token cambia
-
-useEffect(() => {
-  if (!token) {
-    window.location.href = '/login'; // Redirige si no hay token
-    return;
-  }
-
-  const fetchData = async () => {
-    setLoading(true); // Comienza el estado de carga
+    setLoading(true);
     try {
       await fetchUserProfile();
       await fetchOrderHistory();
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false); // Asegúrate de que la carga termine aquí
+      setLoading(false);
     }
   };
 
   fetchData();
 }, [token]); // Ejecutar solo cuando el token cambie
-
-
 
   // Se crea esta función, para manejar la modificación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de modificación y se llenan los campos con los datos actuales de la orden
   const handleModifyOrder = (orderId) => {
