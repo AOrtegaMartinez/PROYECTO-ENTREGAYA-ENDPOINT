@@ -99,7 +99,7 @@ const Login = () => {
 {/*          Se crea un enlace para redireccionar a la ruta /register, si el usuario no tiene cuenta
              Se usa onClick para llamar a la función handleRegisterRedirect al hacer clic en el enlace
  */}        <p className={styles.registerLink}>
-  ¿No tienes cuenta? <button onClick={handleRegisterRedirect} className={styles.registerButton}>Regístrate aquí</button>
+  ¿No tienes cuenta? <button onClick={handleRegisterRedirect} className={styles.registerLink}>Regístrate aquí</button>
 </p>
       </div>
     </div>

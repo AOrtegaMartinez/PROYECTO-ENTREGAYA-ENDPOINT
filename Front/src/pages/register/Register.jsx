@@ -84,7 +84,7 @@ const Register = () => {
 
   // Función para redireccionar al usuario a la página de login
   const handleLoginRedirect = () => {
-    navigate('/login');
+   window.location.hash = '#/login'
   };
 
   return (
@@ -200,7 +200,7 @@ const Register = () => {
 
           <p className={styles.loginLink}>
 {/*           Se crea un link para redireccionar al usuario a la página de login
- */}            ¿Ya tienes cuenta? <a href="#" onClick={handleLoginRedirect}>Inicia sesión aquí</a>
+ */}            ¿Ya tienes cuenta? <button onClick={handleLoginRedirect}>Inicia sesión aquí </button>
           </p>
         </form>
       </div>
