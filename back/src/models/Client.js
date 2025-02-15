@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config"); // Conexión a la base de datos
+const sequelize = require("../config/database"); // Conexión a la base de datos
 
 // Se crea el modelo Client, 
 // este modelo se utiliza para definir la estructura de la tabla Client en la base de datos utilizando Sequelize. 

@@ -1,7 +1,7 @@
 require('dotenv').config(); 
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config');
+const sequelize = require('./config/database');
 const { sendContactMessage } = require('./mailer'); // Importar la función de contacto
 
 // Rutas existentes

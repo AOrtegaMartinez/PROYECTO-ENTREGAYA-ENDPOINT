@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config'); 
+const sequelize = require('../config/database'); 
 
 // Se crea el modelo OrderStatus, 
 // este modelo se utiliza para definir la estructura de la tabla Client en la base de datos utilizando Sequelize. 

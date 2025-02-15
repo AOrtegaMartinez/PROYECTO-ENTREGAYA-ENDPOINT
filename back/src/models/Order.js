@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require("../config"); // Conexión a la base de datos
+const sequelize = require("../config/database"); // Conexión a la base de datos
 const Client = require("./Client");
 const OrderStatus = require("./OrderStatus");
 const { v4: uuidv4 } = require('uuid'); // Se importa uuid para generar códigos únicos
