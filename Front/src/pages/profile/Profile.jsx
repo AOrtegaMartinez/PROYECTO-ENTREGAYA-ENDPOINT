@@ -65,19 +65,24 @@ const fetchOrderHistory = async () => {
     });
 
     if (!response.ok) {
-      const errorMessage = await response.text(); // Obtén el mensaje de error detallado si existe
+      const errorMessage = await response.text();
       throw new Error(errorMessage || 'Error al obtener el historial de órdenes');
     }
 
     const data = await response.json();
-    setOrders(data);
+    
+    // Ordenar las órdenes por ID en orden ascendente
+    const sortedOrders = data.sort((a, b) => a.order_id - b.order_id);
+    
+    setOrders(sortedOrders);
   } catch (err) {
     setError(err.message);
-    console.error('Error fetching order history:', err); // Verifica en la consola el mensaje de error exacto
+    console.error('Error fetching order history:', err);
   } finally {
     setLoading(false);
   }
 };
+
 
 
 useEffect(() => {
@@ -105,14 +110,48 @@ useEffect(() => {
   const handleModifyOrder = (orderId) => {
     const order = orders.find((o) => o.order_id === orderId);
   
+    if (order.current_status === 'In transit') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No puedes modificar esta orden',
+        text: 'La orden ya está en tránsito y no se puede modificar.',
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+  
     Swal.fire({
       title: 'Modificar Orden',
       html: `
-        <input id="package_type" class="swal2-input" placeholder="Tipo de paquete" value="${order.package_type}">
-        <input id="destination_department" class="swal2-input" placeholder="Departamento" value="${order.destination_department}">
-        <input id="destination_municipality" class="swal2-input" placeholder="Municipio" value="${order.destination_municipality}">
-        <input id="recipient_name" class="swal2-input" placeholder="Nombre del destinatario" value="${order.recipient_name}">
-        <input id="destination_address" class="swal2-input" placeholder="Dirección" value="${order.destination_address}">
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; padding-right: 15px;">
+          <div style="display: flex; flex-direction: column;">
+            <label style="font-weight: bold; margin-bottom: 0;">📦 Tipo de paquete:</label>
+            <select id="package_type" class="swal2-input" style="width: calc(100% - 20px); padding: 8px 8px; margin-left:40px; margin-right: 10px; margin-top: 0; border-radius: 4px; border: 1px solid #ccc; background: white;">
+              <option value="paquetes" ${order.package_type === "paquetes" ? "selected" : ""}>Paquetes</option>
+              <option value="documentos" ${order.package_type === "documentos" ? "selected" : ""}>Documentos</option>
+            </select>
+          </div>
+  
+          <div style="display: flex; flex-direction: column;">
+            <label style="font-weight: bold; margin-bottom: 0;">🏢 Departamento:</label>
+            <input id="destination_department" class="swal2-input" style="width: calc(100% - 20px); padding: 6px 8px; margin-right: 10px; margin-top: 0;" value="${order.destination_department}">
+          </div>
+  
+          <div style="display: flex; flex-direction: column;">
+            <label style="font-weight: bold; margin-bottom: 0;">🌆 Municipio:</label>
+            <input id="destination_municipality" class="swal2-input" style="width: calc(100% - 20px); padding: 6px 8px; margin-right: 10px; margin-top: 0;" value="${order.destination_municipality}">
+          </div>
+  
+          <div style="display: flex; flex-direction: column;">
+            <label style="font-weight: bold; margin-bottom: 0;">👤 Nombre del destinatario:</label>
+            <input id="recipient_name" class="swal2-input" style="width: calc(100% - 20px); padding: 6px 8px; margin-right: 10px; margin-top: 0;" value="${order.recipient_name}">
+          </div>
+  
+          <div style="display: flex; flex-direction: column;">
+            <label style="font-weight: bold; margin-bottom: 0;">📍 Dirección de entrega:</label>
+            <input id="destination_address" class="swal2-input" style="width: calc(100% - 20px); padding: 6px 8px; margin-right: 10px; margin-top: 0;" value="${order.destination_address}">
+          </div>
+        </div>
       `,
       showCancelButton: true,
       confirmButtonText: 'Guardar cambios',
@@ -132,7 +171,10 @@ useEffect(() => {
       }
     });
   };
-
+  
+  
+  
+  
   // Se crea esta función, para manejar la cancelación de una orden, donde se obtiene la orden seleccionada y se muestra el modal de confirmación de cancelación y se guarda la orden a cancelar
   const handleCancelOrder = (orderId) => {
     Swal.fire({
@@ -400,21 +442,51 @@ useEffect(() => {
                 <td>{order.current_status}</td>
                 <td>{new Date(order.creation_date).toLocaleDateString()}</td>
                 <td>
-                  {/* Se muestran los botones para modificar y cancelar órdenes */}
-                  <button
-                    onClick={() => handleModifyOrder(order.order_id)}
-                    className={`${styles.modifyButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
-                    disabled={order.current_status !== 'Pending'}
-                  >
-                    Modificar
-                  </button>
-                  <button
-                    onClick={() => handleCancelOrder(order.order_id)}
-                    className={`${styles.cancelButton} ${order.current_status !== 'Pending' ? styles.disabledButton : ''}`}
-                    disabled={order.current_status !== 'Pending'}
-                  >
-                    Cancelar
-                  </button>
+{/* Se muestran los botones para modificar y cancelar órdenes */}
+<button
+  onClick={() => {
+    if (order.current_status === 'Canceled') return; // No hace nada si está cancelada
+
+    if (order.current_status !== 'Pending') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acción no permitida',
+        text: 'Está orden no puede ser modificada, ya esta en tránsito.',
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+
+    handleModifyOrder(order.order_id);
+  }}
+  className={`${styles.modifyButton} ${order.current_status === 'Canceled' ? styles.disabledButton : ''}`}
+  disabled={order.current_status === 'Canceled'}
+>
+  Modificar
+</button>
+
+<button
+  onClick={() => {
+    if (order.current_status === 'Canceled') return; // No hace nada si está cancelada
+
+    if (order.current_status !== 'Pending') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acción no permitida',
+        text: 'Está orden no puede ser cancelada, ya está en tránsito.',
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+
+    handleCancelOrder(order.order_id);
+  }}
+  className={`${styles.cancelButton} ${order.current_status === 'Canceled' ? styles.disabledButton : ''}`}
+  disabled={order.current_status === 'Canceled'}
+>
+  Cancelar
+</button>
+
                 </td>
               </tr>
             ))}

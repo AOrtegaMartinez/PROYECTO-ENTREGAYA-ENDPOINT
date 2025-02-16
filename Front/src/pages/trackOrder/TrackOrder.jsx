@@ -52,7 +52,7 @@ const TrackOrder = () => {
           <input
             className={styles.input}
             type="text"
-            placeholder="Introduce tu número de guía"
+            placeholder="Introduce tu código de transacción"
             value={uuid} 
             onChange={e => setUuid(e.target.value)} 
             required
