@@ -24,7 +24,7 @@ const sendConfirmationEmail = (userEmail, orderCode, orderDetails) => {
     subject: 'Confirmación de Orden',
     html: `
       <h2>Confirmación de Orden</h2>
-      <p>Gracias por tu pedido. Aquí están los detalles de tu orden:</p>
+      <p>Gracias por realizar tu envío con nosotros. Aquí están los detalles de tu orden:</p>
       <p><strong>Código de transacción:</strong> ${orderCode}</p>
       <p><strong>Tipo de Producto:</strong> ${orderDetails.package_type}</p>
       <p><strong>Nombre del destinatario:</strong> ${orderDetails.recipient_name}</p>
