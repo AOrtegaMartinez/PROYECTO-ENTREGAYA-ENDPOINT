@@ -7,7 +7,6 @@ const { sendContactMessage } = require('./mailer');
 // Rutas existentes
 const orderRoutes = require('./routes/orderRoutes');
 const clientRoutes = require('./routes/clientRoutes');
-const orderStatusRoutes = require('./routes/orderStatusRoutes');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 
@@ -27,7 +26,6 @@ app.use(express.json());
 // Rutas de la API
 app.use('/api/orders', orderRoutes);
 app.use('/api/clients', clientRoutes);
-app.use('/api/order-statuses', orderStatusRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 

@@ -12,11 +12,12 @@ const OrderStatus = sequelize.define('OrderStatus', {
     autoIncrement: true,  // Se genera un id incremental de manera automática
   },
   name: {
-    type: DataTypes.ENUM('Pending', 'In transit', 'Delivered', 'Canceled'), // Se Definen los estados posibles
+    type: DataTypes.STRING,
     allowNull: false,  // Se valida que siempre haya un nombre de estado
   }
 }, {
   tableName: 'OrderStatuses', // Asegurar que el nombre de la tabla coincide exactamentes
+  schema: 'public',  // Especifica el esquema si es necesario
   timestamps: true,
 });
 
